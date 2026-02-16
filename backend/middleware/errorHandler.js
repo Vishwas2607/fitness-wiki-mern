@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import { success, ZodError } from "zod";
 import { isDev } from "../utils/constants.js";
 
 export default function errorHandler(err,req,res,next){
@@ -15,11 +15,12 @@ export default function errorHandler(err,req,res,next){
         message = "Token Expired"
     };
 
-    if (err instanceof ZodError) {
+    if (err instanceof ZodError || err.name === "ZodError") {
         return res.status(400).json({
+            success: false,
             message: "Validation error",
             errors: err.errors?.map(e=> ({
-                field: e.path[0],
+                field: e.path.join('.'),
                 message: e.message
             }))
         });

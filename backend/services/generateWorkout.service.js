@@ -5,66 +5,36 @@ import { templates } from "../models/workoutTemplate.js";
 
 // Interacts with Global Exercises
 
-export const generateCustomWorkout = async ({type, primaryMuscles,bodyWeight, equipment,experienceLevel}) => {
+export const generateWorkout = async ({type, primaryMuscles,bodyWeight, equipment, level,days,goal}) => {
     const data = {};
-
-    if (type) {data.type = type};
-    if (targetedBodyPart) {
-        const parts = convertToArray(targetedBodyPart);
-        filter.targetedBodyPart = { $in: parts };
-    };
-
-    if (bodyWeight) {data.bodyWeight = bodyWeight};
+    const weekSplit = getSplit(parseInt(days));
 
     if (equipment) {
         const items = convertToArray(equipment);
-        filter.equipment = { $in: items };
-    };
-
-    if (experienceLevel) {data.level = experienceLevel};
-
-    const exercises =  await findExercises(data);
-
-    if (!exercises || exercises.length === 0) throw new AppError("No exercise found", 400);
-    
-    const exerciseArr = exercises.map(exer => {
-        let details = {exercise: exer._id, name: exer.title};
-
-        return details
-    });
-
-    return exerciseArr;
-};
-
-
-export const generateRecommendedPlans = async ({days,equipment,level,goal}) => {
-
-    const weekSplit = getSplit(parseInt(days));
-    
-    if (!equipment) {
-        equipment = ["none"]
-    } else{
-        equipment = convertToArray(equipment)
+        items.push("none")
+        data.equipment = { $in: items };
+    }else {
+        data.equipment = {$in: ["none"]}
     }
 
-    const allowedLevel = allowedLevels(level);
+    if (level) {data.level = allowedLevels(level)};
 
-    const filter = {equipment: {$in: equipment},level: {$in: allowedLevel} };
-    const exercises = await findExercises(filter).lean();
+    const exercises =  await findExercises(data).lean();
 
     if (!exercises || exercises.length === 0) throw new AppError("No exercise found", 400);
 
     const exerciseMap = groupByMuscle(exercises);
-  
-    let workoutPlan = [];
 
+    let workoutPlan = [];
+    
     weekSplit.forEach(split => {
         const template = templates[split];
-        if (!template) throw new AppError(`Template not found for ${split}`, 500);
+        if(!template) throw new AppError(`Template not found for ${split}`, 500);
 
-        const exercisePerDay = buildDay(template,exerciseMap,goal);
-        if (!exercisePerDay.exercises.length) throw new AppError(`No exercise found for ${split}`,404)
-        workoutPlan.push(exercisePerDay);
+        const exercisePerday = buildDay(template,exerciseMap,goal);
+
+        if(!exercisePerday.exercises.length) throw new AppError(`No exercise found for the split ${split}`,400);
+        workoutPlan.push(exercisePerday);
     })
 
     const workoutPlanWithCardio = attachCardio(workoutPlan,goal);

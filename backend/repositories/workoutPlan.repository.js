@@ -8,10 +8,14 @@ export const findWorkoutPlansByUser = (userId) => {
     return WorkoutPlan.find({ user: userId }); 
 };
 
-export const findWorkoutPlanByName = (userId,name) => {
-    return WorkoutPlan.findOne({user:userId, name: name});
+export const findWorkoutPlanByName = (userId,planName) => {
+    return WorkoutPlan.findOne({user:userId, name:planName});
 };
 
-export const findWorkoutAndDelete = (userId, name) => {
-    return WorkoutPlan.deleteOne({user:userId, name: name});
+export const findWorkoutPlanById = (userId,planId) => {
+    return WorkoutPlan.findOne({_id:planId,user:userId}).populate("plan.exercises.exerciseId");
+}
+
+export const findWorkoutAndDelete = (userId, planId) => {
+    return WorkoutPlan.deleteOne({user:userId, _id:planId});
 }

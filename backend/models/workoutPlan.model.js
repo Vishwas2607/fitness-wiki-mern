@@ -20,31 +20,14 @@ const workoutPlanSchema = new mongoose.Schema({
         enum: ["beginner", "intermediate", "advanced"]
         },
         
-    days: [
-    {
-        day: {
-        type: String,
+    plan: {
+        type:[
+            { exercises: [{exerciseId: { type: mongoose.Schema.Types.ObjectId, ref: "GlobalExercise", required: true}, sets: String, reps: String, restTime: String,}],
+            cardio: {cardioType:String, duration: String}
+            }
+        ],
         required: true
-        },
-        focus: String,
-        exercises: [
-        {
-            exercise: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "GlobalExercise",
-            required: true
-            },
-            sets: Number,
-            reps: Number,
-            duration: Number,
-            restTime: Number,
-            order: Number
-        }
-        ]
-    }
-    ]
-
-    },
+    }},
     {timestamps: true}
 )
 

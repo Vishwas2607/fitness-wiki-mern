@@ -3,7 +3,7 @@ import { accessTokenOptions, refreshTokenOptions } from "../utils/constants.js";
 
 export const registerController = async (req, res) => {
 
-    const user = await registerUser(req.body);
+    const user = await registerUser(req.validatedBody );
 
     res.status(201).json({
         message: "Successfully registered",
@@ -14,7 +14,7 @@ export const registerController = async (req, res) => {
 };
 
 export const loginController = async(req,res) => {
-    const user = await loginUser(req.body);
+    const user = await loginUser(req.validatedBody );
     res.cookie("accessToken",user.accessToken,accessTokenOptions)
         .cookie("refreshToken", user.refreshToken, refreshTokenOptions)
         .status(200)
