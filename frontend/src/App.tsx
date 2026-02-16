@@ -12,6 +12,7 @@ import Register from './pages/auth/register';
 import Dashboard from './pages/dashboard';
 import ProtectedRoute from './layouts/protectedRoute';
 import WorkoutPreview from './pages/workoutPreview';
+import SavedPlans from './pages/savedPlan';
 
 function App() {
   const [isOpen, setOpen] = useState<boolean>(false)
@@ -49,6 +50,7 @@ function App() {
         <Route element={<ProtectedRoute/>}>
           <Route path="/dashboard" element={<Dashboard/>}/>
           <Route path='/preview-plans' element={<WorkoutPreview/>}/> 
+          <Route path='/my-plans' element={<SavedPlans/>} />
         </Route>
       </Routes>
     </main>

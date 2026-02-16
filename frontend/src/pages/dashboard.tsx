@@ -6,7 +6,7 @@ import { useAuthentication } from "../context/AuthenticateContext";
 export default function Dashboard() {
     const {authenticatedStatus} = useAuthentication();
 
-    const recommendedPlans:CardsType[] = [{title: "Weight Loss", level:"beginner", url:"weight_loss", type:"weight_loss", days:"4",goal:"fat_loss",equipment:"none"}, {title: "Strength Training", level:"advanced", url:"strength_training", type:"strength", days:"6",goal:"muscle_gain",equipment:"dumbbell, barbell, machine, pull-up bar,cable machine, bar, dumbbells, kettlebell, lat pulldown machine, seated cable row"}, {title: "Cardio", level:"intermediate", url:"cardio", type:"cardio",days:"3", goal:"fat_loss",equipment:"none"}, {title: "Stretching", level:"begginner", url:"stretching",type:"stretching", days: "4",goal:"muscle_gain",equipment:"none"}]
+    const recommendedPlans:CardsType[] = [{title: "Weight Loss", level:"beginner", url:"weight_loss", type:"weight_loss", days:"4",goal:"fat_loss",equipment:"none"}, {title: "Strength Training", level:"advanced", url:"strength_training", type:"strength", days:"6",goal:"muscle_gain",equipment:"dumbbell, barbell, machine, pull-up bar,cable machine, bar, dumbbells, kettlebell, lat pulldown machine, seated cable row"}, {title: "Cardio", level:"intermediate", url:"cardio", type:"cardio",days:"3", goal:"fat_loss",equipment:"none"}, {title: "Stretching", level:"beginner", url:"stretching",type:"stretching", days: "4",goal:"muscle_gain",equipment:"none"}]
 
     return(
         <section className="section justify-center items-center">

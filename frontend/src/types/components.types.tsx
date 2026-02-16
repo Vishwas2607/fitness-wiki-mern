@@ -1,9 +1,12 @@
+export type Goal = "fat_loss" | "muscle_gain" | "endurance" | "flexibility";
+export type Level = "beginner" | "intermediate" | "advanced";
+
 export interface CardsType {
     title:string,
-    level: string,
+    level: Level,
     type: string,
     url:string,
-    goal: string,
+    goal: Goal,
     days: string,
     equipment: string,
 }

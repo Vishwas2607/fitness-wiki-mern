@@ -26,6 +26,7 @@ export default function Navbar() {
             )}
             {authenticatedStatus.authenticated === "authenticated" && (
                 <>
+                <NavLink to={"/my-plans"} className={({isActive})=> isActive ? "active-link" : "link"}>My Plans</NavLink>
                 <button className="btn btn-danger py-1" onClick={handleClick}>Logout</button>
                 </>
             )}

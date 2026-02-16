@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, LayoutDashboard, LucideLogIn, UserPlus} from "lucide-react";
+import { HomeIcon, LayoutDashboard, LucideLogIn, UserPlus, ClipboardList } from "lucide-react";
 import { useAuthentication } from "../context/AuthenticateContext";
 import useApiAuthCalls from "../services/apiAuthCalls";
 
@@ -27,7 +27,10 @@ export default function Sidebar() {
             )}
             {authenticatedStatus.authenticated === "authenticated" && (
                 <>
-                <button className="btn btn-danger" onClick={handleClick}>Logout</button>
+                <NavLink to={"/my-plans"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><ClipboardList/>My-plans</NavLink>
+                <div className="w-full flex justify-center items-center">
+                    <button className="btn btn-danger" onClick={handleClick}>Logout</button>
+                </div>
                 </>
             )}
         </nav>
