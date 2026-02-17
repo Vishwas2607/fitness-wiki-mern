@@ -2,7 +2,7 @@ import express from "express";
 import { generateWorkoutController } from "../controllers/workout.controller.js";
 import { getSavedPlansController, getMySpecificPlanController, saveWorkoutController, deletePlanController } from "../controllers/workout.controller.js";
 import { validate, validateQuery } from "../middleware/validationMiddleware.js";
-import { getWorkoutPreviewSchema, savePlanSchema } from "../../lib/schemas/workout.validate.js";
+import { getMySpecificPlanQuery, getWorkoutPreviewSchema, savePlanSchema } from "../../lib/schemas/workout.validate.js";
 
 const workoutRouter = express.Router();
 
@@ -12,7 +12,7 @@ workoutRouter.post("/save-workout",validate(savePlanSchema), saveWorkoutControll
 
 workoutRouter.get("/my-plans", getSavedPlansController);
 
-workoutRouter.get("/my-plans/:planId", getMySpecificPlanController);
+workoutRouter.get("/my-plans/:planId",validateQuery(getMySpecificPlanQuery), getMySpecificPlanController);
 
 workoutRouter.delete("/my-plans/:planId", deletePlanController);
 

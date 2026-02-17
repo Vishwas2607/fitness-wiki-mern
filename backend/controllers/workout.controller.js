@@ -24,7 +24,7 @@ export const getSavedPlansController = async(req,res) => {
 
 export const getMySpecificPlanController = async(req,res) => {
 
-    const plan = await mySpecificPlan(req.user, req.params.planId);
+    const plan = await mySpecificPlan(req.user, req.params.planId,req.validatedQuery);
 
     res.status(200).json({plan:plan});
 };

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import WorkoutPlan from "../models/workoutPlan.model.js"
 
 export const createWorkoutPlan = (data)=> {
@@ -12,8 +13,30 @@ export const findWorkoutPlanByName = (userId,planName) => {
     return WorkoutPlan.findOne({user:userId, name:planName});
 };
 
-export const findWorkoutPlanById = (userId,planId) => {
-    return WorkoutPlan.findOne({_id:planId,user:userId}).populate("plan.exercises.exerciseId");
+export const findPaginatedWorkoutPlan = async (userId,planId, page) => {
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(planId),
+                user: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $project: {
+                name: 1,
+                goal: 1,
+                userLevel: 1,
+                totalDays: {$size: "$plan"},
+                dayData: {$slice: ["$plan", page-1,1]}
+            }
+        }
+    ]
+
+    const results = await WorkoutPlan.aggregate(pipeline);
+
+    if (!results || results.length === 0) return null;
+
+    return WorkoutPlan.populate(results[0], {path: "plan.exercises.exerciseId"});
 }
 
 export const findWorkoutAndDelete = (userId, planId) => {
