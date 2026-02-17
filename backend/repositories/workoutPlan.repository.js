@@ -36,7 +36,7 @@ export const findPaginatedWorkoutPlan = async (userId,planId, page) => {
 
     if (!results || results.length === 0) return null;
 
-    return WorkoutPlan.populate(results[0], {path: "plan.exercises.exerciseId"});
+    return WorkoutPlan.populate(results[0], {path: "dayData[0].exercises.exerciseId", model:"GlobalExercise"});
 }
 
 export const findWorkoutAndDelete = (userId, planId) => {
