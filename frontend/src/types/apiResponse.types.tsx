@@ -20,7 +20,46 @@ export interface SavedPlans {
     planId: ObjectId,
     name: string,
     goal: Goal,
-    level: Level
+    userLevel: Level
 }
 
 export type SavedPlansResponse = {plans: SavedPlans[]};
+
+export type ExerciseId = {
+    _id: string,
+    title: string,
+    howToPerform: string[],
+    image: string,
+    primaryMuscles: string[],
+    secondaryMuscles: string[],
+    level: string,
+    equipment: string[],
+    trainingType: string,
+    exerciseCategory: string,
+};
+
+export type Exercise = {
+    exerciseId: ExerciseId,
+    sets: string,
+    reps: string,
+    restTime: string
+}
+
+export type Cardio = {
+    cardioType: string,
+    duration: string
+}
+export interface DayDataType {
+    exercises: Exercise[],
+    cardio: Cardio | undefined | null
+}
+
+export interface MySpecificPlan {
+    _id: string,
+    name: string,
+    goal: string,
+    totalDays: number,
+    dayData: DayDataType[]
+}
+
+export type MySpecificPlanResponse = {plan: MySpecificPlan}

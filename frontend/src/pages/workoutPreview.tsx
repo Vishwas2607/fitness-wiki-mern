@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useApiMainCalls from "../services/apiMainCalls";
 import type { RecommendedWorkoutResponseData, saveWorkoutPlan } from "../types/apiResponse.types";
 import type { Goal, Level } from "../types/components.types";
@@ -7,6 +7,7 @@ import type { Goal, Level } from "../types/components.types";
 export default function WorkoutPreview() {
     const [searchParams] = useSearchParams();
     const {callMainApi} = useApiMainCalls();
+    const navigate = useNavigate();
 
     const queryClient = useQueryClient();
 
@@ -22,11 +23,13 @@ export default function WorkoutPreview() {
     const goal: Goal = myGoal as Goal; 
     const equipment = searchParams.get("equipment") || "";
 
-    const {mutateAsync,isPending}= useMutation({
+    const {mutate,isPending}= useMutation({
         mutationFn: async(data:saveWorkoutPlan) =>await callMainApi<saveWorkoutPlan, {message:string}>({link:"workouts/save-workout", method: "POST", data:data}),
         onSuccess: () => {
             console.log("success");
-            queryClient.invalidateQueries({queryKey:["preview-plans", title,level,days],})
+            queryClient.invalidateQueries({queryKey:["preview-plans", title,level,days],});
+            navigate("/my-plans")
+
         },
         onError: (err) => console.error(err)
     })
@@ -49,14 +52,10 @@ export default function WorkoutPreview() {
         }
     }) || []
 
-    const workoutPlan: saveWorkoutPlan = {planName: title, goal: goal, level: level, plan:plan}
+    const workoutPlan: saveWorkoutPlan = {planName: title, goal: goal, userLevel: level, plan:plan}
 
     const handleSavePlan = async (data:saveWorkoutPlan) => {
-        try{
-            mutateAsync(data)
-        } catch (err) {
-            console.error(err);
-        }
+        mutate(data);
     }
 
     return (
@@ -96,7 +95,7 @@ export default function WorkoutPreview() {
             ))
             }
 
-            {data?.workoutPlan.length && <button className="btn btn-primary w-100 disabled:btn-disabled" disabled={isPending} onClick={()=> handleSavePlan(workoutPlan)}>{isPending ? "Saving Plan": "Save Plan"}</button>}
+            {data?.workoutPlan.length && <button className="btn btn-primary w-[70%] disabled:btn-disabled" disabled={isPending} onClick={()=> handleSavePlan(workoutPlan)}>{isPending ? "Saving Plan": "Save Plan"}</button>}
             
         </section>
     )
