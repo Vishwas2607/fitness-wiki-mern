@@ -18,6 +18,10 @@
     @apply border border-slate-600 hover:border-emerald-500 text-slate-300 hover:text-slate-100 
 }
 
+@utility btn-ghost{
+    @apply text-slate-200 hover:bg-slate-400
+}
+
 @utility input{
     @apply w-full bg-slate-900 border border-slate-700 rounded-xl py-1 px-4 text-slate-100 focus:outline-none focus:ring-emerald-500
 }
@@ -40,6 +44,10 @@
 
 @utility card{
     @apply bg-slate-800 flex flex-col border-slate-700 rounded-2xl p-2 md:p-6 shadow-sm hover:shadow-md transition duration-300 shadow-emerald-900/50 hover:scale-[1.02] w-full
+}
+
+@utility card-details{
+    @apply bg-slate-800 flex flex-col border-slate-700 rounded-2xl p-2 md:p-6 shadow-sm transition duration-300 shadow-emerald-900/50 w-full
 }
 
 @utility main-border {

@@ -4,6 +4,9 @@ import { useNavigate, useParams } from "react-router";
 import { useState } from "react";
 import { Link } from "react-router";
 import type { MySpecificPlanResponse } from "../types/apiResponse.types";
+import { ModalProvider } from "../modals/modalProvider";
+import { ModalTrigger } from "../modals/modalTrigger";
+import Modals from "../modals/modalDetails";
 
 export default function SpecificPlan() {
     const params = useParams();
@@ -16,7 +19,7 @@ export default function SpecificPlan() {
         queryKey: ["saved-plans", params?.planId ,pageNo],
         queryFn: async() => await callMainApi<null, MySpecificPlanResponse>({link:`workouts/my-plans/${params.planId}?page=${pageNo}&limit=1`, method:"GET", data: null})
     });
-    console.log(data)
+
     return (
         <section className="section body-text">
 
@@ -36,17 +39,20 @@ export default function SpecificPlan() {
                             <div className="flex gap-6 card-title"><span>Goal: {data.plan.goal.replace("_", " ")}</span><span>Total Days: {data.plan.totalDays}</span></div>
                         </div>
                         
-                        {data.plan.dayData[0].exercises.map((exer,index) => (
-                            <div className="card gap-6">
-                                <h4 className="card-title">Exeercise {index+1}: {exer.exerciseId.title}</h4>
+                        <ModalProvider>
+                        {data.plan.dayData?.[0].exercises.map((exer,index) => (
+                            <div className="card-details gap-6" key={exer.exerciseId._id}>
+                                <h4 className="card-title">Exercise {index+1}: {exer.exerciseId.title}</h4>
                                 <div className="flex gap-3 md:gap-6 text-sm md:text-base">
                                     <span>Sets: {exer.sets}</span>
                                     <span>Reps: {exer.reps}</span>
                                     <span>RestTime: {exer.restTime}</span>
                                 </div>
-                                <button className="btn btn-primary w-fit">View Full Details</button>
+                                    <ModalTrigger id={exer.exerciseId._id}/>
+                                    <Modals _id={exer.exerciseId._id} title={exer.exerciseId.title} howToPerform={exer.exerciseId.howToPerform} image={exer.exerciseId.image} level={exer.exerciseId.level} primaryMuscles={exer.exerciseId.primaryMuscles} secondaryMuscles= {exer.exerciseId.secondaryMuscles} trainingType={exer.exerciseId.trainingType} equipment={exer.exerciseId.equipment} exerciseCategory={exer.exerciseId.exerciseCategory} />
                             </div>
                         ))}
+                        </ModalProvider>
 
                         {data.plan.totalDays > 1 && (
                             <div className="w-full flex justify-between items-center">

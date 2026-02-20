@@ -10,3 +10,16 @@ export interface CardsType {
     days: string,
     equipment: string,
 }
+
+export interface ModalProps {
+    _id: string,
+    title: string,
+    howToPerform: string[],
+    image: string,
+    primaryMuscles: string[],
+    secondaryMuscles: string[],
+    level: string,
+    equipment: string[],
+    trainingType: string,
+    exerciseCategory: string,
+}
