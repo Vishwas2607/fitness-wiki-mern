@@ -63,3 +63,10 @@ export interface MySpecificPlan {
 }
 
 export type MySpecificPlanResponse = {plan: MySpecificPlan}
+
+
+export interface AllExerciseTypes {
+    allExercises: ExerciseId[],
+    nextPage: boolean,
+    totalPages: number,
+}

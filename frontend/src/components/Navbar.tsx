@@ -27,6 +27,11 @@ export default function Navbar() {
             {authenticatedStatus.authenticated === "authenticated" && (
                 <>
                 <NavLink to={"/my-plans"} className={({isActive})=> isActive ? "active-link" : "link"}>My Plans</NavLink>
+                {authenticatedStatus.role === "admin" && (
+                    <>
+                        <NavLink to={"/global-exercise"} className={({isActive})=> isActive ? "active-link" : "link"}>All Exercises</NavLink>
+                    </>
+                )} 
                 <button className="btn btn-danger py-1" onClick={handleClick}>Logout</button>
                 </>
             )}
