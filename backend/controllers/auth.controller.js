@@ -33,8 +33,7 @@ export const refreshTokenController = async(req,res) => {
 };
 
 export const logoutController = async(req,res) => {
-    const token = req.cookies.refreshToken;
-
+    const token = req.cookies.accessToken;
     await logoutUser(token);
 
     res.clearCookie("accessToken",accessTokenOptions)

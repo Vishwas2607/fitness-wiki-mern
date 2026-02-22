@@ -7,8 +7,9 @@ export const createGlobalExerciseController = async(req,res) => {
 };
 
 export const getGlobalExercisesController = async(req,res) => {
-  const allExercises = await getGlobalExercises();
-  res.status(200).json({exercises: allExercises}); 
+
+  const allExercises = await getGlobalExercises(req.validatedQuery);
+  res.status(200).json({...allExercises}); 
 };
 
 export const deleteGlobalExerciseController = async(req,res) => {

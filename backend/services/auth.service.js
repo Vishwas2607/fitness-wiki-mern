@@ -82,20 +82,7 @@ export const logoutUser = async(token) => {
     if(!token) {
         throw new AppError("Unauthorized", 401);
     }
-    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
-    const savedUser = await findUserByIdWithRefreshToken(payload.sub);
-
-    if (!savedUser) {
-        throw new AppError("Forbidden", 403)
-    };
-
-
-    const isMatch = await bcrypt.compare(token, savedUser.refreshToken);
-    
-    if (!isMatch) {
-        throw new AppError("Invalid refresh token", 401)
-    };
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await resetRefreshToken(payload.sub);
 
@@ -103,5 +90,5 @@ export const logoutUser = async(token) => {
         throw new AppError("User not found", 404);
     };
 
-    return
+    return { message: "User logged out successfully" };
 }

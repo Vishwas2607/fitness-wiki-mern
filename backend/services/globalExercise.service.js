@@ -1,4 +1,4 @@
-import { createExercise, deleteExerciseById, findAllExercises, findExerciseBySlug } from "../repositories/globalExercise.repository.js";
+import { countAllExercises, createExercise, deleteExerciseById, findAllExercises, findExerciseBySlug } from "../repositories/globalExercise.repository.js";
 import { AppError } from "../utils/AppError.js";
 import { convertToArray, slugify } from "../utils/helpers.js";
 
@@ -24,10 +24,20 @@ export const createGlobalExercise = async({title,howToPerform,primaryMuscles,sec
     return await createExercise(exerciseData);
 };
 
-export const getGlobalExercises = async() => {
-    const exercises = await findAllExercises();
-    if(!exercises || exercises.length === 0) throw new AppError("No exercise found", 400)
-    return exercises;
+export const getGlobalExercises = async({page,limit}) => {
+    const skip = (page - 1) * limit;
+
+    const [exercises, exerciseCount] = await Promise.all([
+            findAllExercises(limit, skip),
+            countAllExercises()
+        ]);
+        
+    if(!exercises || exercises.length === 0) throw new AppError("No exercise found", 400);
+    
+    const nextPage = exerciseCount > page*limit ? true: false;
+    const totalPages = Math.ceil(exerciseCount/limit);
+
+    return {allExercises: exercises, nextPage:nextPage, totalPages:totalPages};
 }
 
 export const deleteExercise = async(id) => {

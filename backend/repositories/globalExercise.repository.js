@@ -8,9 +8,13 @@ export const findExerciseBySlug = (slug) => {
     return GlobalExercise.findOne({slug: slug})
 };
 
-export const findAllExercises = () => {
-    return GlobalExercise.find();
+export const findAllExercises = (limit,skip) => {
+    return GlobalExercise.find().sort({createdAt:-1}).limit(limit).skip(skip);
 };
+
+export const countAllExercises = () => {
+    return GlobalExercise.countDocuments();
+}
 
 export const createExercise = (data) => {
     return GlobalExercise.create(data);
