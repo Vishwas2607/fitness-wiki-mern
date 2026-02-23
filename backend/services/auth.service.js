@@ -66,8 +66,11 @@ export const refreshTokenGenerate = async(token) => {
     const isMatch = await bcrypt.compare(token, user.refreshToken);
     
     if (!isMatch) {
-        throw new AppError("Invalid refresh token", 401)
-    }
+    user.refreshToken = null;
+    await user.save();
+    throw new AppError("Refresh token reuse detected. Please login again.", 403);
+    };
+    
     const newAccessToken = generateAccessToken(payload.sub, user.role)
     const newRefreshToken = generateRefreshToken(payload.sub, user.role);
 

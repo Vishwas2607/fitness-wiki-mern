@@ -2,16 +2,16 @@ export const isDev = process.env.NODE_ENV !== "production"
 
 export const accessTokenOptions = {
   httpOnly: true,
-  sameSite: isDev ? "lax" : "none",
-  secure: !isDev,
+  sameSite: "none",
+  secure: true,
   maxAge: 15 * 60 * 1000,
   path: "/"
 };
 
 export const refreshTokenOptions = {
   httpOnly: true,
-  sameSite: "lax" ,
-  secure: !isDev,
+  sameSite: "none" ,
+  secure: true,
   path: "/api/auth/refresh-token",
   maxAge: 7 * 24 * 60 * 60 *1000
 };
