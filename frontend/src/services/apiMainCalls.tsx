@@ -2,11 +2,15 @@ import { useNavigate } from "react-router-dom"
 import { useAuthentication } from "../context/AuthenticateContext";
 import type { ApiProps } from "../types/auth.types";
 
+let isRefreshing: boolean = false;
+let refreshPromise: Promise<boolean> | null = null;
+let hasRedirected: boolean = false;
+
 export default function useApiMainCalls() {
     const navigate = useNavigate();
     const {markUnauthenticated} = useAuthentication();
     const baseUrl = import.meta.env.VITE_BACKEND_URL;
-
+    
     const logoutAndRedirect = () => {
         markUnauthenticated();
         navigate("/login")
@@ -37,10 +41,23 @@ export default function useApiMainCalls() {
             });
 
             if(response.status === 401 && !retry) {
-                const refreshed = await refreshAccessToken();
+                if (!isRefreshing) {
+                    isRefreshing = true;
+                    hasRedirected= false;
+                    refreshPromise = refreshAccessToken().finally(() => {
+                        isRefreshing = false;
+                    });
+                }
+
+                const refreshed = await refreshPromise;
+
+                refreshPromise = null
 
                 if (!refreshed) {
-                    logoutAndRedirect();
+                    if (!hasRedirected) { 
+                        hasRedirected = true;
+                        logoutAndRedirect();
+                    }
                     throw new Error("Session Expired Please Login Again");
                 };
 
