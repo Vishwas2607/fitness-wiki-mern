@@ -42,7 +42,7 @@ export const loginUser = async({email,password}) => {
 
         const hashedRefreshToken = await bcrypt.hash(refreshToken,10);
 
-        await addRefreshTokenAndRole(user._id, hashedRefreshToken);
+        await addRefreshTokenAndRole(user._id, hashedRefreshToken, user.role);
 
         return {accessToken,refreshToken}
     } else{
