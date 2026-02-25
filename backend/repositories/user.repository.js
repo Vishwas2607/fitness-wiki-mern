@@ -8,6 +8,12 @@ export const createUser = (userData) => {
     return User.create(userData);
 };
 
+export const findOneUser = (email,username) => {
+    return User.findOne({
+        $or: [{email, username}]
+    });
+}
+
 export const findUserByEmailWithPassword = (email) => {
     return User.findOne({ email }).select("+password");
 };

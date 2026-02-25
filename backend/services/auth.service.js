@@ -1,29 +1,27 @@
 import bcrypt from "bcrypt";
 import { AppError } from "../utils/AppError.js";
-import { findUserByEmail, createUser, findUserByUsername, findUserByEmailWithPassword, resetRefreshToken, findUserByIdWithRefreshToken, addRefreshTokenAndRole } from "../repositories/user.repository.js";
+import { createUser, findOneUser, findUserByEmailWithPassword, resetRefreshToken, findUserByIdWithRefreshToken, addRefreshTokenAndRole } from "../repositories/user.repository.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokenGenerator.js";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async ({ username, email, password }) => {
 
-    const existingUser = await findUserByEmail(email);
+    const existingUser = await findOneUser(email,username);
+
     if (existingUser) {
-        throw new AppError("User already exists", 400);
-    }
-
-    const existingUsername = await findUserByUsername(username);
-
-    if (existingUsername) {
-        throw new AppError("Username is already registered", 400)
+        const field = existingUser.email === email ? "Email" : "Username";
+        throw new AppError(`${field} already exists`, 400);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return await createUser({
+    const newUser = await createUser({
         username,
         email,
         password: hashedPassword,
     });
+
+    return {username: newUser.username, email: newUser.email}
 };
 
 export const loginUser = async({email,password}) => {
