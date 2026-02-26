@@ -12,7 +12,7 @@ export const refreshTokenOptions = {
   httpOnly: true,
   sameSite: "none" ,
   secure: true,
-  path: "/api/auth/refresh-token",
+  path: "/api/auth",
   maxAge: 7 * 24 * 60 * 60 *1000
 };
 

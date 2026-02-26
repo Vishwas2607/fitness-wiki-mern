@@ -64,8 +64,7 @@ export const refreshTokenGenerate = async(token) => {
     const isMatch = await bcrypt.compare(token, user.refreshToken);
     
     if (!isMatch) {
-    user.refreshToken = null;
-    await user.save();
+    await addRefreshTokenAndRole(user._id,"", user.role)
     throw new AppError("Refresh token reuse detected. Please login again.", 403);
     };
     
@@ -73,9 +72,7 @@ export const refreshTokenGenerate = async(token) => {
     const newRefreshToken = generateRefreshToken(payload.sub, user.role);
 
     const hashedRefreshToken = await bcrypt.hash(newRefreshToken,10);
-    user.refreshToken = hashedRefreshToken;
-    await user.save();
-
+    await addRefreshTokenAndRole(user._id,hashedRefreshToken, user.role)
     return {newAccessToken,newRefreshToken}
 };
 
@@ -83,13 +80,19 @@ export const logoutUser = async(token) => {
     if(!token) {
         throw new AppError("Unauthorized", 401);
     }
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
-    const user = await resetRefreshToken(payload.sub);
+    const user = await findUserByIdWithRefreshToken(payload.sub);
 
     if(!user) {
         throw new AppError("User not found", 404);
     };
+
+    if (!user.refreshToken) {
+        return { message: "User logged out successfully" };
+    };
+
+    await resetRefreshToken(payload.sub);
 
     return { message: "User logged out successfully" };
 }
