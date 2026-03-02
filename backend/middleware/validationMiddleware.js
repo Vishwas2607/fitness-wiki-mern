@@ -5,7 +5,7 @@ export const validate =
   (req, res, next) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-        throw new AppError(`Data Parsing failed: ${result.error}`, 500);
+        throw result.error
       };
 
     req.validatedBody = result.data;
@@ -16,7 +16,7 @@ export const validateQuery = (schema) => (req,res,next) => {
   const result = schema.safeParse(req.query);
 
   if (!result.success) {
-    throw new AppError(`Data Parsing failed: ${result.error}`, 500);
+    throw result.error
   };
 
   req.validatedQuery = result.data;

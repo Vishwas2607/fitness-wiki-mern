@@ -3,21 +3,21 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 
 let mongoServer;
 
-beforeAll(async () => {
+export const connectTestDB =  async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
-});
+};
 
-afterEach(async () => {
+export const clearTestDB = async () => {
   const collections = mongoose.connection.collections;
 
   for (const key in collections) {
     await collections[key].deleteMany();
   }
-});
+};
 
-afterAll(async () => {
+export const closeTestDB = async () => {
   await mongoose.disconnect();
   await mongoServer.stop();
-});
+};

@@ -10,7 +10,7 @@ export const createUser = (userData) => {
 
 export const findOneUser = (email,username) => {
     return User.findOne({
-        $or: [{email, username}]
+        $or: [{email}, {username}]
     });
 }
 
