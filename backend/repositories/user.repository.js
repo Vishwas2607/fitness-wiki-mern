@@ -35,7 +35,7 @@ export const addRefreshTokenAndRole = async(id,refreshToken,role) => {
     return User.findByIdAndUpdate(
         id,
         { refreshToken,role },
-        { new: true }
+        { returnDocument: 'after' }
     )
 };
 
@@ -43,6 +43,6 @@ export const resetRefreshToken = (id) => {
     return User.findByIdAndUpdate(
         id,
         {refreshToken: ""},
-        {new:true}
+        { returnDocument: 'after' }
     )
 };
