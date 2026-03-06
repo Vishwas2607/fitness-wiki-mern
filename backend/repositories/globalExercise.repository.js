@@ -12,6 +12,10 @@ export const findAllExercises = (limit,skip) => {
     return GlobalExercise.find().sort({createdAt:-1}).limit(limit).skip(skip);
 };
 
+export const findExerciseById = (id) => {
+    return GlobalExercise.findById(id)
+}
+
 export const countAllExercises = () => {
     return GlobalExercise.countDocuments();
 }

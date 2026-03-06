@@ -1,4 +1,4 @@
-import { createGlobalExercise, deleteExercise, getGlobalExercises } from "../services/globalExercise.service.js";
+import { createGlobalExercise, deleteExercise, getGlobalExercises, getOneExercise } from "../services/globalExercise.service.js";
 
 export const createGlobalExerciseController = async(req,res) => {
     const newExercise = await createGlobalExercise(req.body);
@@ -16,4 +16,10 @@ export const deleteGlobalExerciseController = async(req,res) => {
   const deletedExercise = await deleteExercise(req.params.exerciseId);
 
   res.status(200).json({message: `Exercise with Id ${deletedExercise._id} is deleted successfully` })
+}
+
+export const getOneExerciseController = async(req,res) => {
+  const exercise = await getOneExercise(req.params.exerciseId)
+  console.log(exercise)
+  res.status(200).json({...exercise})
 }

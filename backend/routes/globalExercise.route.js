@@ -1,5 +1,5 @@
 import express from "express";
-import {createGlobalExerciseController, deleteGlobalExerciseController, getGlobalExercisesController } from "../controllers/globalExercise.controller.js";
+import {createGlobalExerciseController, deleteGlobalExerciseController, getGlobalExercisesController, getOneExerciseController } from "../controllers/globalExercise.controller.js";
 import { validate, validateQuery } from "../middleware/validationMiddleware.js";
 import { exerciseSchema, getAllExerciseQuerySchema } from "../../lib/schemas/globalExercise.validate.js";
 
@@ -10,5 +10,6 @@ globalExerciseRouter.post("/",validate(exerciseSchema), createGlobalExerciseCont
 globalExerciseRouter.get("/",validateQuery(getAllExerciseQuerySchema), getGlobalExercisesController);
 
 globalExerciseRouter.delete("/:exerciseId", deleteGlobalExerciseController);
+globalExerciseRouter.get("/:exerciseId", getOneExerciseController)
 
 export default globalExerciseRouter;

@@ -1,4 +1,4 @@
-import { countAllExercises, createExercise, deleteExerciseById, findAllExercises, findExerciseBySlug } from "../repositories/globalExercise.repository.js";
+import { countAllExercises, createExercise, deleteExerciseById, findAllExercises, findExerciseById, findExerciseBySlug } from "../repositories/globalExercise.repository.js";
 import { AppError } from "../utils/AppError.js";
 import { convertToArray, slugify } from "../utils/helpers.js";
 
@@ -45,4 +45,11 @@ export const deleteExercise = async(id) => {
 
     if(!deletedExercise) throw new AppError("Failed to delete the exercise", 400)
     return deletedExercise;
+}
+
+export const getOneExercise = async(id) => {
+    const exercise = await findExerciseById(id).lean();
+
+    if (!exercise) throw new AppError("Exercise not found", 404);
+    return exercise;
 }
