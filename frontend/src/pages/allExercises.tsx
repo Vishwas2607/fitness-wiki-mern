@@ -54,7 +54,11 @@ export default function AllExercises() {
                         {data.allExercises.map((exer,index)=> (
                             <div className="card-details gap-6 relative" key={exer._id}>
                                 <h4 className="card-title">Exercise {(pageNo - 1)*10 +index+1}: {exer.title}</h4>
-                                    <ModalTrigger id={exer._id}/>
+                                    <div className="flex gap-6">
+                                        <ModalTrigger id={exer._id}/>
+                                        <Link to={`/global-exercise/edit-exercise/${exer._id}`} className="btn btn-primary w-fit px-4 py-2 md:px-6">Edit Exercise</Link>
+                                    </div>
+                                    
                                     <Modals _id={exer._id} title={exer.title} howToPerform={exer.howToPerform} image={exer.image} level={exer.level} primaryMuscles={exer.primaryMuscles} secondaryMuscles= {exer.secondaryMuscles} trainingType={exer.trainingType} equipment={exer.equipment} exerciseCategory={exer.exerciseCategory} />
                                      <button className="absolute top-2 right-2 -rotate-90 text-rose-500 disabled:btn-disabled" aria-label="delete-plan" onClick={()=>handleDelete(exer._id)} disabled={isPending}>{<Delete size={24}/>}</button>
                             </div>

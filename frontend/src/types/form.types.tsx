@@ -1,5 +1,6 @@
 import { registerSchema, type loginSchema } from "../../../lib/schemas/auth.validator";
 import {z} from "zod";
+import type { exerciseSchema } from "../../../lib/schemas/globalExercise.validate";
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
@@ -13,3 +14,5 @@ export const registerSchemaExtended = registerSchema.extend({
 
 export type RegisterPostDataType = z.infer<typeof registerSchema>;
 export type RegisterFormValues = z.infer<typeof registerSchemaExtended>;
+
+export type ExerciseFormValues = z.infer<typeof exerciseSchema>;

@@ -16,6 +16,7 @@ import SavedPlans from './pages/savedPlan';
 import SpecificPlan from './pages/specificPlan';
 import AllExercises from './pages/allExercises';
 import ProtectedRouteAdmin from './layouts/protectedRouteAdmin';
+import AddExercise from './pages/addExercise';
 
 function App() {
   const [isOpen, setOpen] = useState<boolean>(false)
@@ -58,6 +59,8 @@ function App() {
 
           <Route element={<ProtectedRouteAdmin />}>
               <Route path='/global-exercise' element={<AllExercises/>}/>
+              <Route path="/global-exercise/add-exercise" element={<AddExercise/>}/>
+              <Route path="/global-exercise/edit-exercise/:id" element={<AddExercise/>}/>
           </Route>
           
         </Route>

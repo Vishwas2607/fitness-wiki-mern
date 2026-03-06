@@ -11,9 +11,6 @@ export default function ProtectedRoute() {
     if (authenticatedStatus.authenticated === "unauthenticated"){ 
         return <Navigate to="/login" replace/>;
     }
-    if (authenticatedStatus.authenticated === "authenticated"){ 
-        return <Navigate to="/dashboard" replace/>;
-    }
 
     return <Outlet/>
 }

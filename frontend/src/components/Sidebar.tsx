@@ -31,6 +31,7 @@ export default function Sidebar() {
                 {authenticatedStatus.role === "admin" && (
                     <>
                         <NavLink to={"/global-exercise"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><Dumbbell/>All Exercises</NavLink>
+                        <NavLink to={"/global-exercise/add-exercise"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><Dumbbell/>Add Exercises</NavLink>
                     </>
                 )} 
                 

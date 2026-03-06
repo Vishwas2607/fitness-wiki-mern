@@ -70,3 +70,5 @@ export interface AllExerciseTypes {
     nextPage: boolean,
     totalPages: number,
 }
+
+export type AddExerciseResponse = {message: string}
