@@ -1,4 +1,4 @@
-import { countAllExercises, createExercise, deleteExerciseById, findAllExercises, findExerciseById, findExerciseBySlug } from "../repositories/globalExercise.repository.js";
+import { countAllExercises, createExercise, deleteExerciseById, findAllExercises, findExerciseById, findExerciseBySlug, updateExerciseById } from "../repositories/globalExercise.repository.js";
 import { AppError } from "../utils/AppError.js";
 import { convertToArray, slugify } from "../utils/helpers.js";
 
@@ -53,3 +53,23 @@ export const getOneExercise = async(id) => {
     if (!exercise) throw new AppError("Exercise not found", 404);
     return exercise;
 }
+
+export const updateGlobalExercise = async(id,{title,howToPerform,primaryMuscles,secondaryMuscles,movementPattern,trainingType,exerciseCategory,image,youtubeLink,bodyWeight,level,equipment}) => {
+
+    if (!title || !howToPerform || !primaryMuscles || !trainingType || !exerciseCategory || !image) {
+      throw new AppError("Missing required fields", 400);
+    };
+
+    const slug = slugify(title);
+
+    const exerciseData = {title: title,slug:slug,howToPerform:convertToArray(howToPerform),primaryMuscles:convertToArray(primaryMuscles), trainingType:trainingType,exerciseCategory:exerciseCategory,image:image}
+
+    if (secondaryMuscles) exerciseData.secondaryMuscles = convertToArray(secondaryMuscles);
+    if (movementPattern) exerciseData.movementPattern = movementPattern
+    if (youtubeLink) exerciseData.youtubeLink = youtubeLink;
+    if(level) exerciseData.level = level;
+    if (bodyWeight !== undefined) exerciseData.bodyWeight = bodyWeight;
+    if (equipment) exerciseData.equipment = convertToArray(equipment);
+
+    return await updateExerciseById(id,exerciseData);
+};
