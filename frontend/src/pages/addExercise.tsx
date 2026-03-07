@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import {exerciseSchema} from "../../../lib/schemas/globalExercise.validate"
 import type { ExerciseFormValues } from "../types/form.types";
 import useApiMainCalls from "../services/apiMainCalls";
@@ -13,8 +13,9 @@ export default function AddExercise(){
     const params = useParams();
     const [error, setError] = useState("");
     const {callMainApi} = useApiMainCalls();
+    const navigate = useNavigate();
+
     let isEditing = !!params.id ;
-    console.log(isEditing)
 
     const {data} = useQuery({
         queryKey:["all-exercises", params.id],
@@ -39,6 +40,10 @@ export default function AddExercise(){
             const result = await callMainApi<ExerciseFormValues, AddExerciseResponse>({link:link, method:method, data: data})
             console.log(result.message)
             reset()
+            if(isEditing) {
+                navigate("/global-exercise", {replace:true})
+            }
+
         } catch (err) {
             console.error(err);
             setError(err instanceof Error ? err.message : "Something went wrong")
@@ -46,7 +51,6 @@ export default function AddExercise(){
     }
     useEffect(() => {
         if (data) {
-            console.log(data)
             const formattedData = {
             ...data,
             howToPerform: convertToString(data.howToPerform),
@@ -54,7 +58,6 @@ export default function AddExercise(){
             secondaryMuscles: convertToString(data.secondaryMuscles),
             equipment: convertToString(data.equipment)
         };
-        console.log(formattedData)
         reset(formattedData as ExerciseFormValues)
         }
     }, [data, reset]);
