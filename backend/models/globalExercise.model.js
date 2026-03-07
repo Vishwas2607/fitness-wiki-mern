@@ -65,18 +65,3 @@ const globalExerciseSchema = new mongoose.Schema({
 const GlobalExercise = mongoose.model("GlobalExercise", globalExerciseSchema);
 
 export default GlobalExercise;
-
-
-
-
-// I am making my second MERN Project Fitness planner, I want something like muscleWiki or fitness programmer like websites.
-
-// I made admin based role for admins to add, delete, update, create exercises which is added in globalExercise model.
-
-// using this model and user goals, and other factors like equipment, targeted muscles etc. I make a customized plan for them and also some common recommended plans which is also dynamically created by filtering global exercises.
-
-// After exercises are fetched from global exercise I send user a preview if they like it then save to database therwise forget.
-
-// I have written the code to generate recommended plans, I am not sure if it will work or not. But can you check it, as I am so confused and just changed the schema for better fetching.
-
-// What do you think, How I can structure this , do you need any code files or models ?

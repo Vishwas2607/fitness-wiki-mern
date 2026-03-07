@@ -5,9 +5,10 @@ import { templates } from "../models/workoutTemplate.js";
 
 // Interacts with Global Exercises
 
-export const generateWorkout = async ({type, primaryMuscles,bodyWeight, equipment, level,days,goal}) => {
+export const generateWorkout = async ({primaryMuscles,bodyWeight, equipment, level,days,goal}) => {
     const data = {};
     const weekSplit = getSplit(parseInt(days));
+    const prefs = { goal, level, bodyWeight, primaryMuscles };
 
     if (equipment) {
         const items = convertToArray(equipment);
@@ -31,7 +32,7 @@ export const generateWorkout = async ({type, primaryMuscles,bodyWeight, equipmen
         const template = templates[split];
         if(!template) throw new AppError(`Template not found for ${split}`, 500);
 
-        const exercisePerday = buildDay(template,exerciseMap,goal);
+        const exercisePerday = buildDay(template, exerciseMap, prefs);
 
         if(!exercisePerday.exercises.length) throw new AppError(`No exercise found for the split ${split}`,400);
         workoutPlan.push(exercisePerday);

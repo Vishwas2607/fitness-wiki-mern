@@ -49,29 +49,102 @@ export const applyVolume = (goal) => {
   }
 };
 
-export const buildDay = (template, exerciseMap, goal) => {
-  const volume = applyVolume(goal);
+export const limitMovementPattern = (exercises) => {
+  const patternCount = {};
+  const filtered = [];
+
+  for (const ex of exercises) {
+    const pattern = ex.movementPattern || "other";
+
+    if (!patternCount[pattern]) patternCount[pattern] = 0;
+
+    if (patternCount[pattern] < 2) {
+      filtered.push(ex);
+      patternCount[pattern]++;
+    }
+  }
+
+  return filtered;
+};
+
+export const scoreExercise = (exercise, prefs) => {
+  let score = 0;
+
+  if (prefs.goal === "strength" && exercise.exerciseCategory === "compound")
+    score += 3;
+
+  if (prefs.goal === "muscle_gain" && exercise.exerciseCategory === "compound")
+    score += 2;
+
+  if (prefs.bodyWeight && exercise.bodyWeight)
+    score += 2;
+
+  if (exercise.level === prefs.level)
+    score += 2;
+
+  if (
+    prefs.primaryMuscles &&
+    prefs.primaryMuscles.some(m => exercise.primaryMuscles.includes(m))
+  )
+    score += 3;
+
+  return score;
+};
+
+export const rankExercises = (exercises, prefs) => {
+  return exercises
+    .map(ex => ({
+      ...ex,
+      score: scoreExercise(ex, prefs)
+    }))
+    .sort((a, b) => b.score - a.score);
+};
+
+export const pickRandom = (arr, count) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
+export const buildDay = (template, exerciseMap, prefs) => {
+  const volume = applyVolume(prefs.goal);
   const dayExercises = [];
 
-  const perMuscleCount = Math.floor(
-    template.exercisesCount / template.focus.length
-  );
-
   for (const muscle of template.focus) {
-    const group = MUSCLE_GROUPS[muscle]
+    const group = MUSCLE_GROUPS[muscle];
     const pool = exerciseMap[group];
-    if (!pool) continue;
-    const compounds = pool.compound.slice(0, 2);
-    const isolations = pool.isolation.slice(0, perMuscleCount - 1);
-    const combinedExercises = [...compounds, ...isolations]
 
-    combinedExercises.forEach(ex =>{
-     
-      dayExercises.push({ ...ex, ...volume })
-      }
+    if (!pool) continue;
+
+    const rankedCompounds = rankExercises(pool.compound, prefs);
+    const rankedIsolations = rankExercises(pool.isolation, prefs);
+
+    const compounds = pickRandom(
+      rankedCompounds.slice(0, 6),
+      Math.ceil(template.compoundCount / template.focus.length)
     );
+
+    const isolations = pickRandom(
+      rankedIsolations.slice(0, 6),
+      Math.ceil(template.isolationCount / template.focus.length)
+    );
+    
+    const seen = new Set();
+
+    [...compounds, ...isolations].forEach(ex => {
+      if (seen.has(ex._id)) return;
+
+      seen.add(ex._id);
+
+      dayExercises.push({
+        ...ex,
+        ...volume
+      });
+    });
   }
-  return { exercises: dayExercises };
+
+  const balancedExercises = limitMovementPattern(dayExercises)
+
+  return { exercises: balancedExercises };
 };
 
 export const attachCardio = (plan,goal) => {
