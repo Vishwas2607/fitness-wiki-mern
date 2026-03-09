@@ -1,5 +1,5 @@
 import { findExercises } from "../repositories/globalExercise.repository.js";
-import { allowedLevels, attachCardio, buildDay, convertToArray, getSplit, groupByMuscle } from "../utils/helpers.js";
+import { allowedLevels, attachCardio, buildDay, convertToArray, getSplit, groupByMuscle, buildExercisePools, prioritizeFocus } from "../utils/helpers.js";
 import { AppError } from "../utils/AppError.js";
 import { templates } from "../models/workoutTemplate.js";
 
@@ -8,7 +8,9 @@ import { templates } from "../models/workoutTemplate.js";
 export const generateWorkout = async ({primaryMuscles,bodyWeight, equipment, level,days,goal}) => {
     const data = {};
     const weekSplit = getSplit(parseInt(days));
-    const prefs = { goal, level, bodyWeight, ...(primaryMuscles !== "none" && {primaryMuscles: convertToArray(primaryMuscles)}) };
+    const prefs = { goal, level, bodyWeight, primaryMuscles: primaryMuscles !== "none"
+    ? convertToArray(primaryMuscles)
+    : [] };
 
     if (equipment) {
         const items = convertToArray(equipment);
@@ -27,12 +29,15 @@ export const generateWorkout = async ({primaryMuscles,bodyWeight, equipment, lev
     const exerciseMap = groupByMuscle(exercises);
 
     let workoutPlan = [];
+
+    const usedExercises = new Set();
     
     weekSplit.forEach(split => {
-        const template = templates[split];
+        const template = prioritizeFocus(templates[split], prefs);
+        
         if(!template) throw new AppError(`Template not found for ${split}`, 500);
 
-        const exercisePerday = buildDay(template, exerciseMap, prefs);
+        const exercisePerday = buildDay(template, exerciseMap, prefs, usedExercises);
 
         if(!exercisePerday.exercises.length) throw new AppError(`No exercise found for the split ${split}`,400);
         workoutPlan.push(exercisePerday);

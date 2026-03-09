@@ -6,6 +6,27 @@ export const convertToArray = (str = "") =>
 export const slugify = (str) =>
   str.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
 
+export const buildExercisePools = (exercises) => {
+
+  const strength = exercises.filter(
+    ex => ex.trainingType === "strength"
+  );
+
+  const core = exercises.filter(
+    ex => ex.exerciseCategory === "core"
+  );
+
+  const cardio = exercises.filter(
+    ex => ex.trainingType === "cardio"
+  );
+
+  return {
+    strength,
+    core,
+    cardio
+  };
+};
+
 export const normalizeString = (str) => {
   return str.toLowerCase().trim().replace(" ", "_");
 }
@@ -86,7 +107,16 @@ export const scoreExercise = (exercise, prefs) => {
     prefs.primaryMuscles &&
     prefs.primaryMuscles.some(m => exercise.primaryMuscles.includes(m))
   )
+    score += 5;
+
+  if (
+    prefs.primaryMuscles &&
+    prefs.primaryMuscles.some(m =>
+      exercise.secondaryMuscles?.includes(m)
+    )
+  ) {
     score += 3;
+  }
 
   return score;
 };
@@ -105,7 +135,27 @@ export const pickRandom = (arr, count) => {
   return shuffled.slice(0, count);
 };
 
-export const buildDay = (template, exerciseMap, prefs) => {
+export const prioritizeFocus = (template, prefs) => {
+
+  if (!prefs.primaryMuscles?.length) {
+    return template;
+  }
+
+  const boostedFocus = [...template.focus];
+
+  prefs.primaryMuscles.forEach(muscle => {
+    if (template.focus.includes(muscle)) {
+      boostedFocus.unshift(muscle);
+    }
+  });
+
+  return {
+    ...template,
+    focus: boostedFocus
+  };
+};
+
+export const buildDay = (template, exerciseMap, prefs, usedExercises) => {
   const volume = applyVolume(prefs.goal);
   const dayExercises = [];
 
@@ -115,8 +165,8 @@ export const buildDay = (template, exerciseMap, prefs) => {
 
     if (!pool) continue;
 
-    const rankedCompounds = rankExercises(pool.compound, prefs);
-    const rankedIsolations = rankExercises(pool.isolation, prefs);
+    const rankedCompounds = rankExercises(pool.compound, prefs).filter(ex=> !usedExercises.has(ex._id.toString()));
+    const rankedIsolations = rankExercises(pool.isolation, prefs).filter(ex=> !usedExercises.has(ex._id.toString()));
 
     const compounds = pickRandom(
       rankedCompounds.slice(0, 6),
@@ -131,9 +181,12 @@ export const buildDay = (template, exerciseMap, prefs) => {
     const seen = new Set();
 
     [...compounds, ...isolations].forEach(ex => {
-      if (seen.has(ex._id)) return;
+      const id = ex._id.toString();
+
+      if (seen.has(id) || usedExercises.has(id)) return;
 
       seen.add(ex._id);
+      usedExercises.add(id);
 
       dayExercises.push({
         ...ex,
@@ -142,9 +195,23 @@ export const buildDay = (template, exerciseMap, prefs) => {
     });
   }
 
-  const balancedExercises = limitMovementPattern(dayExercises)
+  const balancedExercises = limitMovementPattern(dayExercises);
+  const limitedExercises = balancedExercises.slice(0, template.exerciseCount || 6)
 
-  return { exercises: balancedExercises };
+  const corePool = exerciseMap["core"];
+
+  if (corePool && corePool.isolation?.length) {
+    const coreExercise = pickRandom(corePool.isolation, 1)[0];
+
+    if (coreExercise) {
+      limitedExercises.push({
+        ...coreExercise,
+        ...volume
+      });
+    }
+  }
+
+  return { exercises: limitedExercises };
 };
 
 export const attachCardio = (plan,goal) => {
