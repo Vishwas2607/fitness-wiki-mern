@@ -76,7 +76,7 @@ export const scoreExercise = (exercise, prefs) => {
   if (prefs.goal === "muscle_gain" && exercise.exerciseCategory === "compound")
     score += 2;
 
-  if (prefs.bodyWeight && exercise.bodyWeight)
+  if (prefs.bodyWeight === exercise.bodyWeight)
     score += 2;
 
   if (exercise.level === prefs.level)
@@ -127,7 +127,7 @@ export const buildDay = (template, exerciseMap, prefs) => {
       rankedIsolations.slice(0, 6),
       Math.ceil(template.isolationCount / template.focus.length)
     );
-    
+
     const seen = new Set();
 
     [...compounds, ...isolations].forEach(ex => {
@@ -148,9 +148,11 @@ export const buildDay = (template, exerciseMap, prefs) => {
 };
 
 export const attachCardio = (plan,goal) => {
-  const rule = cardioRules[goal];
+  const rule = cardioRules[goal] || {days: 0, duration:"0 min"};
   
   return plan.map((day, index) => {
+    if (rule.days === 0) return
+    
     if (index < rule.days) {
       return {
         ...day,

@@ -27,6 +27,11 @@ export const cardioRules = {
     days: 2,
     duration: "10-15 min",
     intensity: "low"
+  },
+  strength: {
+    days: 1,
+    duration: "5-10 min",
+    intensity: "low"
   }
 };
 

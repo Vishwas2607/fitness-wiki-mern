@@ -8,7 +8,7 @@ import { templates } from "../models/workoutTemplate.js";
 export const generateWorkout = async ({primaryMuscles,bodyWeight, equipment, level,days,goal}) => {
     const data = {};
     const weekSplit = getSplit(parseInt(days));
-    const prefs = { goal, level, bodyWeight, primaryMuscles };
+    const prefs = { goal, level, bodyWeight, ...(primaryMuscles !== "none" && {primaryMuscles: convertToArray(primaryMuscles)}) };
 
     if (equipment) {
         const items = convertToArray(equipment);

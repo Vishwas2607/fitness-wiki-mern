@@ -12,7 +12,7 @@ const workoutPlanSchema = new mongoose.Schema({
     },
     goal: {
         type: String,
-        enum: ["fat_loss", "muscle_gain", "endurance", "flexibility"],
+        enum: ["fat_loss", "muscle_gain", "endurance", "strength"],
         default: "fat_loss"
     },
     userLevel: {
