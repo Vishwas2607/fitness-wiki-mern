@@ -17,6 +17,7 @@ import SpecificPlan from './pages/specificPlan';
 import AllExercises from './pages/allExercises';
 import ProtectedRouteAdmin from './layouts/protectedRouteAdmin';
 import AddExercise from './pages/addExercise';
+import CustomPlanForm from './pages/customPlanForm';
 
 function App() {
   const [isOpen, setOpen] = useState<boolean>(false)
@@ -53,6 +54,7 @@ function App() {
 
         <Route element={<ProtectedRoute/>}>
           <Route path="/dashboard" element={<Dashboard/>}/>
+          <Route path="/create-custom-workout" element={<CustomPlanForm/>}/>
           <Route path='/preview-plans' element={<WorkoutPreview/>}/> 
           <Route path='/my-plans' element={<SavedPlans/>} />
           <Route path='/my-plans/:planId' element={<SpecificPlan/>}/>

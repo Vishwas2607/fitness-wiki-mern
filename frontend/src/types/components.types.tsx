@@ -1,4 +1,4 @@
-export type Goal = "fat_loss" | "muscle_gain" | "endurance" | "flexibility";
+export type Goal = "fat_loss" | "muscle_gain" | "endurance" | "strength";
 export type Level = "beginner" | "intermediate" | "advanced";
 
 export interface CardsType {

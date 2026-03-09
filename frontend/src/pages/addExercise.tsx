@@ -113,6 +113,11 @@ export default function AddExercise(){
                         </select>
                     </div>
 
+                    <div className="input-wrapper flex-row justify-start">
+                        <label htmlFor="bodyWeight" className="mt-2">Body Weight:</label>
+                        <input type="checkbox" className="w-5 h-10" defaultChecked id="bodyWeight" {...register("bodyWeight")}/>
+                    </div>
+
                     <div className="input-wrapper justify-start">
                         <label htmlFor="level">Level:</label>
                         <select id="level" className="select" {...register("level")}>

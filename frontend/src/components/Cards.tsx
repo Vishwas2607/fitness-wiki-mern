@@ -14,10 +14,16 @@ export default function Cards({details}: {details: CardsType}) {
         }
     )
 
-    const query = `title=${details.title}&days=${details.days}&level=${details.level}&goal=${details.goal}&equipment=${details.equipment}`;
-
+    const params = new URLSearchParams({
+        title: details.title,
+        days: String(details.days),
+        level: details.level,
+        goal: details.goal,
+        equipment: details.equipment,
+    });
+    
     const handleClick = () => {
-        navigate(`/preview-plans?${query}`)
+        navigate(`/preview-plans?${params.toString()}`)
     };
 
     return(

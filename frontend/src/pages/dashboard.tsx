@@ -2,6 +2,7 @@ import { PlusIcon } from "lucide-react";
 import type { CardsType } from "../types/components.types";
 import Cards from "../components/Cards";
 import { useAuthentication } from "../context/AuthenticateContext";
+import { Link } from "react-router";
 
 export default function Dashboard() {
     const {authenticatedStatus} = useAuthentication();
@@ -34,7 +35,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <button className="btn btn-primary">Create your own Workout Plan <PlusIcon size={25}/></button>
+            <Link to="/create-custom-workout" className="btn btn-primary">Create your own Workout Plan <PlusIcon size={25}/></Link>
 
         </section>
     )

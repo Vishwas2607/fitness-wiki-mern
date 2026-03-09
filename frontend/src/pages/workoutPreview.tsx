@@ -14,14 +14,21 @@ export default function WorkoutPreview() {
     const mylevel = searchParams.get('level') || "beginner";
     const level: Level = mylevel as Level;
 
-    const days = searchParams.get("days") || "";
+    const days = searchParams.get("days") || "1";
 
     const title = searchParams.get("title") || "";
 
     const myGoal = searchParams.get("goal") || "fat_loss";
 
     const goal: Goal = myGoal as Goal; 
-    const equipment = searchParams.get("equipment") || "";
+    const equipment = searchParams.get("equipment") || "none";
+    const bodyWeight = searchParams.get("bodyWeight") || "";
+    const primaryMuscles = searchParams.get("primaryMuscles") || "none";
+
+    let query = `title=${title}&days=${days}&level=${level}&goal=${goal}&equipment=${equipment}&bodyWeight=${bodyWeight}`;
+        if(primaryMuscles !== "none" && primaryMuscles !=="") {
+            query = query + `&primaryMuscles=${primaryMuscles}`;
+        };
 
     const {mutate,isPending}= useMutation({
         mutationFn: async(data:saveWorkoutPlan) =>await callMainApi<saveWorkoutPlan, {message:string}>({link:"workouts/save-workout", method: "POST", data:data}),
@@ -36,7 +43,7 @@ export default function WorkoutPreview() {
 
     const {data,isLoading,error} = useQuery({
         queryKey:["preview-plans", title,level,days],
-        queryFn: async() => await callMainApi<null, RecommendedWorkoutResponseData>({link: `workouts/workout-preview?days=${days}&level=${level}&goal=${goal}&equipment=${equipment}`, method:"GET", data:null}),
+        queryFn: async() => await callMainApi<null, RecommendedWorkoutResponseData>({link: `workouts/workout-preview?${query}`, method:"GET", data:null}),
         
     });
 
