@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, LayoutDashboard, LucideLogIn, UserPlus, ClipboardList, Dumbbell } from "lucide-react";
+import { HomeIcon, LayoutDashboard, LucideLogIn, UserPlus, ClipboardList, Dumbbell, PlusIcon } from "lucide-react";
 import { useAuthentication } from "../context/AuthenticateContext";
 import useApiAuthCalls from "../services/apiAuthCalls";
 
@@ -31,7 +31,7 @@ export default function Sidebar() {
                 {authenticatedStatus.role === "admin" && (
                     <>
                         <NavLink to={"/global-exercise"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><Dumbbell/>All Exercises</NavLink>
-                        <NavLink to={"/global-exercise/add-exercise"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><Dumbbell/>Add Exercises</NavLink>
+                        <NavLink to={"/global-exercise/add-exercise"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}><PlusIcon/>Add Exercises</NavLink>
                     </>
                 )} 
                 
