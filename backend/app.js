@@ -23,6 +23,7 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
     cb(new Error("Not allowed by CORS"));
   },
+  methods: ["GET", "POST", "PATCH", "DELETE"],
   credentials: true,
 }));
 
