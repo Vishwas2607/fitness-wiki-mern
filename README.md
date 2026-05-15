@@ -1,245 +1,378 @@
-🏋️‍♂️ FitnessWiki
+# 🏋️‍♂️ FitnessWiki
 
-A full-stack MERN fitness planner web application that helps users follow structured workout plans based on their fitness goals.
+A full-stack MERN fitness planner web application that helps users generate, preview, and manage structured workout plans based on their fitness goals, experience level, and available equipment.
 
-Users can:
+Built with a strong focus on:
+- Scalable backend architecture
+- Secure authentication flows
+- Role-based authorization
+- Clean state management
+- Production-oriented engineering practices
+- Testing and validation
 
-Choose from recommended workout plans
+---
 
-Generate custom workout plans based on personal data (age, height, weight, level, equipment, etc.)
+## 🚀 Live Demo
 
-Preview workouts before saving them
+### 🌐 Frontend
+https://fitness-wiki-frontend.onrender.com
 
-Securely manage their saved workout plans
+### 📦 Repository
+https://github.com/Vishwas2607/fitness-wiki-mern.git
 
-🚧 Currently 50-60% complete — actively under development with continuous improvements.
+---
 
-🚀 Tech Stack
-Frontend
+# ✨ Features
 
-React
+## 🔐 Authentication & Security
 
-TypeScript
+- User Registration & Login
+- JWT Authentication
+- Access + Refresh Token Rotation
+- HTTP-only Secure Cookies
+- Persistent Authentication using `/auth/me`
+- Role-Based Access Control (RBAC)
+- Protected Routes
+- Single Session Enforcement
+- Secure Logout Flow
+- Authentication State Management using TypeScript Enums
 
-TailwindCSS
+---
 
-React Query
+## 🏋️ Workout Planning Features
 
-Zod (Validation)
+- Recommended Workout Plans
+- Custom Workout Plan Generation
+- Workout Preview Before Saving
+- Save Workout Plans
+- Fetch Saved Plans
+- Dynamic Exercise Filtering
+- Equipment-aware Workout Generation
+- Goal-based Workout Selection
+- Admin-managed Global Exercise Dictionary
 
-Context API (Auth state management)
+---
 
-Backend
+## 🧠 Frontend Engineering Features
 
-Node.js
+- Three-State Authentication Flow
+  - `LOADING`
+  - `AUTHENTICATED`
+  - `UNAUTHENTICATED`
 
-Express.js
+- `verifyAuth()` based session validation
+- Full-page loader during auth verification
+- Role-aware route protection
+- Encapsulated auth state management
+- `useCallback` optimized auth verification
+- React Query server-state handling
+- Zod-based form validation
+- Responsive UI
+- Dark Theme Support
+- Disabled submit buttons until valid input
 
-MongoDB (Mongoose + MongoDB Atlas)
+---
 
-JWT Authentication (Access + Refresh Tokens)
+## 🛡️ Backend Engineering Features
 
-HTTP-only Cookies
+- Layered Architecture
+- Repository Pattern
+- Service Layer Abstraction
+- Express v5 Native Async Error Handling
+- Global Error Handling Middleware
+- Request Validation using Zod
+- Environment-based Logging using Morgan
+- Helmet Security Middleware
+- Rate Limiting (Global + Auth-specific)
 
-Zod (Validation)
+---
 
-Helmet
+# 🧪 Testing
 
-Morgan (Environment-based logging)
+Authentication system is fully tested with:
 
-Rate Limiting (General + Auth specific)
+- ✅ 48 Total Tests Passing
+- ✅ Unit Tests
+- ✅ Integration Tests
+- ✅ Refresh Token Flow Testing
+- ✅ Cookie Authentication Testing
+- ✅ Validation Testing
+- ✅ Error Handling Testing
 
-🏗️ Architecture
+### Testing Stack
+
+- Vitest
+- Supertest
+- MongoMemoryServer
+
+### Coverage Breakdown
+
+| Test Type | Count |
+|---|---|
+| Auth Service Unit Tests | 28 |
+| Auth Flow Integration Tests | 20 |
+
+---
+
+# 🏗️ Architecture
 
 Backend follows clean layered architecture:
 
+```text
 Model → Repository → Service → Controller → Routes
+```
 
-⚡ Express v5 Native Async Error Handling
+---
 
-This project uses Express v5+, which natively supports async error handling.
+# 📊 Backend Request Flow
 
-Unlike Express v4, there is:
+```mermaid
+graph TD
 
-❌ No need for express-async-handler
+A[Client Request]
+--> B[Routes]
 
-❌ No need for custom async wrappers
+B --> C[Controller]
 
-✅ Errors can be thrown directly inside async controllers
+C --> D[Service Layer]
 
-✅ Automatically caught by the global error handler
+D --> E[Repository Layer]
 
-📂 Project Structure
+E --> F[(MongoDB)]
+```
 
-Backend Structure
-config/
-controllers/
-middleware/
-models/
-repositories/
-routes/
-services/
-utils/
-app.js
-server.js
+---
 
-Frontend Structure
-src/
-  components/
-  context/
-  hooks/
-  layouts/
-  pages/
-  services/
-  types/
-  App.tsx
-lib/ (Shared Zod schemas)
+# 🔐 Authentication Flow
 
-🔐 Authentication Flow (Fully Implemented)
+```mermaid
+sequenceDiagram
 
-User Registration
+participant Client
+participant Frontend
+participant Backend
+participant Database
 
-Login
+Client->>Frontend: Login Request
+Frontend->>Backend: Credentials
+Backend->>Database: Verify User
+Database-->>Backend: User Found
 
-Logout
+Backend-->>Frontend: Access + Refresh Tokens (HTTP-only Cookies)
 
-JWT Authentication
+Frontend->>Backend: /auth/me
+Backend-->>Frontend: Authenticated User + Role
 
-Access + Refresh Token Rotation
+Frontend-->>Client: Protected Content
+```
 
-HTTP-only Cookies
+---
 
-Single Session Enforcement
+# ⚙️ Authentication State Management
 
-/auth/me backend verification for persistent login
+FitnessWiki uses a secure backend-driven authentication verification strategy.
 
-Context-based secure auth state management
+Instead of relying on:
+- LocalStorage authentication
+- Direct frontend-only auth state
 
-Encapsulated setter logic (no direct state manipulation)
+The application verifies authentication status using:
 
-🔥 Security Measures
+```text
+/auth/me
+```
 
-Helmet
+This approach ensures:
 
-Rate limiting (auth & global)
+- Persistent login after refresh
+- No UI flickering
+- Secure auth verification
+- Centralized role handling
+- Controlled auth state updates
 
-Global error handler
+### Authentication States
 
-Zod validation (frontend + backend)
+```ts
+enum AuthStatus {
+  LOADING,
+  AUTHENTICATED,
+  UNAUTHENTICATED
+}
+```
 
-Role-based authorization middleware
+Protected route layouts render:
 
-📦 Database Schemas
+| State | Result |
+|---|---|
+| LOADING | Full-page loader |
+| AUTHENTICATED | Protected routes |
+| UNAUTHENTICATED | Redirect/Login |
 
-User
+---
 
-GlobalExercise (Admin-managed exercise dictionary)
+# 🧱 Database Schemas
 
-WorkoutPlan
+## Current Schemas
 
-SavedWorkoutPlan
+### User
+Stores authentication and profile information.
 
-🚧 WorkoutLog (Planned)
+### GlobalExercise
+Admin-managed exercise dictionary used for workout generation.
 
-✅ Features Completed
-👤 User Features
+### WorkoutPlan
+Stores generated workout plans.
+
+### SavedWorkoutPlan
+Stores user-confirmed workout plans with exercise references.
+
+---
+
+## Planned Schemas
+
+### WorkoutLog
+Planned for:
+- Workout tracking
+- Progress analytics
+- Volume tracking
+- Future recommendation improvements
 
-Authentication system (production-level flow)
+---
 
-Dashboard (username + recommended plans)
+# 🚀 Tech Stack
 
-Workout plan preview (day-wise exercises)
+## Frontend
 
-Protected routes
+- React
+- TypeScript
+- TailwindCSS
+- React Query
+- Context API
+- Zod
+
+---
+
+## Backend
+
+- Node.js
+- Express.js v5
+- MongoDB
+- Mongoose
+- JWT Authentication
+- HTTP-only Cookies
+- Helmet
+- Morgan
+- Rate Limiting
 
-Dark theme responsive UI
+---
 
-Form validation with detailed error messages
+## Testing
 
-Disabled submit buttons until valid input
+- Vitest
+- Supertest
+- MongoMemoryServer
 
-🏋️ Workout Plan Logic
+---
 
-Backend filtering-based recommended plans
+## Deployment
 
-Template-based generation (Push/Pull/Legs logic)
+| Service | Platform |
+|---|---|
+| Frontend | Render |
+| Backend | Render |
+| Database | MongoDB Atlas |
 
-Rule-based exercise selection from GlobalExercise schema
+---
 
-🛠 Admin Capabilities (Backend Implemented)
+# 📂 Project Structure
 
-Create Global Exercises
+## Backend
 
-Read Global Exercises
+```text
+backend/
+│
+├── config/
+├── controllers/
+├── middleware/
+├── models/
+├── repositories/
+├── routes/
+├── services/
+├── tests/
+├── utils/
+├── app.js
+└── server.js
+```
 
-Delete Global Exercises
+---
 
-Update (Pending)
+## Frontend
 
-Role-based access control
+```text
+frontend/
+│
+├── src/
+│   ├── components/
+│   ├── context/
+│   ├── hooks/
+│   ├── layouts/
+│   ├── pages/
+│   ├── services/
+│   ├── types/
+│   └── App.tsx
+│
+└── lib/
+```
 
-💾 Saved Workout
+---
 
-Save plan logic implemented (schema refactor pending update)
+# ⚡ Express v5 Native Async Error Handling
 
-Get saved plans
+FitnessWiki uses Express v5 native async error handling.
 
-🚧 Work In Progress
+Benefits:
 
-Custom workout plan generation (schema redesign ongoing)
+- No `express-async-handler`
+- No custom async wrappers
+- Cleaner controller code
+- Centralized error handling
+- Better maintainability
 
-Fix saved workout logic after schema redesign
+---
 
-Workout log model
+# 🔥 Security Measures
 
-Frontend Admin panel (currently using Postman)
+- Helmet
+- HTTP-only Cookies
+- JWT Rotation
+- Role-Based Authorization
+- Zod Validation
+- Global Error Handling
+- Rate Limiting
+- Secure Auth Verification
+- Encapsulated Auth State Logic
 
-Exercise Update route
+---
 
-Improved exercise filtering logic
+# 📸 Screenshots
 
-Avoid repetition
 
-Balanced number of exercises per day
 
-Score-based selection system
+---
 
-Better randomization logic
+# ⚙️ Environment Variables
 
-🧠 Key Engineering Decisions
-1️⃣ Backend-Based Auth Verification
+## Frontend
 
-Avoided:
-
-LocalStorage authentication (security risk)
-
-useState-only auth (caused reload issues)
-
-Solution:
-
-/auth/me endpoint verification
-
-Context-based verifyAuth() function
-
-Encapsulated setter logic
-
-Controlled markUnauthenticated() function
-
-No direct state mutation from components
-
-This ensures:
-
-No UI flicker
-
-Secure authentication
-
-Clean state management
-
-⚙️ Environment Variables
-Frontend
+```env
 VITE_BACKEND_URL=
+```
 
-Backend
+---
+
+## Backend
+
+```env
 PORT=
 CLIENT_URL=
 MONGO_URI=
@@ -247,89 +380,79 @@ JWT_SECRET=
 JWT_REFRESH_SECRET=
 ADMIN_SECRET=
 NODE_ENV=
+```
 
-🛠 Installation & Setup
-1️⃣ Clone the Repository
+---
+
+# 🛠️ Installation & Setup
+
+## 1️⃣ Clone Repository
+
+```bash
 git clone https://github.com/Vishwas2607/fitness-wiki-mern.git
-cd FitnessWiki
+```
 
-2️⃣ Backend Setup
+---
+
+## 2️⃣ Backend Setup
+
+```bash
 cd backend
 npm install
 npm run dev
+```
 
-3️⃣ Frontend Setup
+---
+
+## 3️⃣ Frontend Setup
+
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-📌 Current Limitations
+---
 
-Exercise database is still limited (affects filtering accuracy)
+# 🎯 Planned Features
 
-Some generated workout days may contain inconsistent exercise counts
+- Workout Logging System
+- Progress Analytics Dashboard
+- Smarter Score-based Exercise Selection
+- Recovery-aware Exercise Balancing
+- Advanced Recommendation Logic
 
-Save workout flow temporarily broken due to schema redesign
+---
 
-No workout tracking/logging yet
-
-🎯 Upcoming Features
-
-Smart score-based exercise filtering
-
-Workout logging system
-
-Progress tracking dashboard
-
-Admin dashboard UI
-
-Plan editing functionality
-
-Deployment (Production ready)
-
-Unit & integration testing
-
-CI/CD setup
-
-💡 Future Improvements (Suggestions)
-
-Add pagination for exercises
-
-Add muscle recovery logic between workout days
-
-Add analytics (weekly volume, intensity tracking)
-
-Implement Redis for token blacklist (optional scaling)
-
-Add Docker support
-
-Add Swagger documentation
-
-Add GitHub Actions CI
-
-📊 Project Status
-
-🟡 50% Complete
-🚀 Actively Improving & Refactoring
+# 💡 Engineering Highlights
 
 This project demonstrates:
 
-Production-level authentication
+- Production-style authentication architecture
+- Clean backend separation of concerns
+- Repository + Service layer implementation
+- Secure cookie-based auth
+- RBAC implementation
+- Persistent authentication strategy
+- Integration and unit testing
+- Validation-driven API design
+- Scalable folder structure
+- Express v5 async error architecture
+- Strong frontend auth-state management patterns
 
-Backend architecture structuring
+---
 
-Role-based access control
+# 📌 Project Status
 
-Advanced filtering logic
+## ✅ Completed & Deployed
 
-Secure state management
+FitnessWiki is fully functional and deployed with:
+- Authentication system
+- Workout generation
+- Save workout flow
+- RBAC
+- Secure backend architecture
+- Tested auth flows
+- Responsive frontend
 
-Clean folder structure
-
-Usage of Express v5 native async error propagation
-
-Clean global error handling architecture
-
-👨‍💻 Author
-
-Built with consistency and focus on backend architecture, authentication security, and scalable logic.
+Future improvements will focus on analytics and workout tracking features.
