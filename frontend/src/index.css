@@ -90,7 +90,7 @@
 }
 
 @utility sidebar {
-    @apply w-40 md:w-50 bg-slate-900 border-slate-800 min-h-screen py-6 flex flex-col gap-6
+    @apply w-40 md:w-50 border-r bg-slate-900 border-slate-800 min-h-screen flex flex-col gap-6
 }
 
 @utility sidebar-link {

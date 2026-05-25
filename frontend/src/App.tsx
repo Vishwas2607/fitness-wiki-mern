@@ -38,9 +38,9 @@ function App() {
         exit={{x:"-100%"}}
         transition={{duration:0.4, ease:"easeOut"}}
         aria-hidden={!isOpen}
-        className='fixed bottom-0 left-0 h-[calc(100vh-48px)] z-10 body-text'
+        className='fixed top-0 left-0 z-10 body-text'
         >
-        <Sidebar/>
+        <Sidebar isOpen={isOpen} setOpen={setOpen}/>
         </motion.div>
         }
         </AnimatePresence>

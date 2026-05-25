@@ -2,8 +2,9 @@ import { NavLink } from "react-router-dom";
 import { HomeIcon, LayoutDashboard, LucideLogIn, UserPlus, ClipboardList, Dumbbell, PlusIcon } from "lucide-react";
 import { useAuthentication } from "../context/AuthenticateContext";
 import useApiAuthCalls from "../services/apiAuthCalls";
+import { Squash as Hamburger } from 'hamburger-react';
 
-export default function Sidebar() {
+export default function Sidebar({isOpen, setOpen}: {isOpen:boolean; setOpen: (isOpen:boolean)=> void}) {
     const {authenticatedStatus} = useAuthentication();
     const {logout} = useApiAuthCalls();
 
@@ -17,6 +18,10 @@ export default function Sidebar() {
 
     return(
         <nav className="sidebar">
+            <div className='flex w-full justify-end'>
+                <Hamburger toggled={isOpen} toggle={()=>setOpen(!isOpen)} color={"white"} size={20}/>
+            </div>
+
             <NavLink to={"/"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link" }><HomeIcon/>Home</NavLink>
             <NavLink to={"/dashboard"} className={({isActive})=> isActive ? "active-sidebar-link": "sidebar-link"}> <LayoutDashboard/>Dashboard</NavLink>
             {authenticatedStatus.authenticated !== "authenticated" && (
